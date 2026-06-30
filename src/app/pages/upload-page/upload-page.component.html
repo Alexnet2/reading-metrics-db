@@ -1,0 +1,119 @@
+<div class="container">
+  <!-- Seção de Upload -->
+  <div *ngIf="!result" class="upload-section">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Enviar Vídeo</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Área de drag & drop -->
+        <div
+          class="drop-zone"
+          [class.drag-over]="isDragOver"
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave()"
+          (drop)="onDrop($event)"
+        >
+          <div class="drop-content">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <p class="primary-text">Arraste seu vídeo aqui ou clique para selecionar</p>
+            <p class="secondary-text">Formatos suportados: MP4, MOV, AVI, MKV, WebM</p>
+            <p class="secondary-text" *ngIf="selectedFile">
+              Arquivo selecionado: {{ selectedFile.name }}
+            </p>
+          </div>
+
+          <input
+            type="file"
+            #fileInput
+            style="display: none"
+            accept="video/*"
+            (change)="onFileSelected($event)"
+          />
+        </div>
+
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="fileInput.click()"
+          class="select-button"
+        >
+          Selecionar Arquivo
+        </button>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button
+          mat-raised-button
+          color="accent"
+          (click)="processVideo()"
+          [disabled]="!selectedFile || isProcessing"
+          class="process-button"
+        >
+          {{ isProcessing ? 'Processando...' : 'Processar Vídeo' }}
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Mensagem de erro -->
+    <div *ngIf="errorMessage" class="error-message">
+      <p>{{ errorMessage }}</p>
+    </div>
+
+    <!-- Barra de progresso -->
+    <div *ngIf="isProcessing && progress" class="progress-section">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Progresso do Processamento</mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="progress-info">
+            <p class="progress-phase" *ngIf="progress.message">{{ progress.message }}</p>
+
+            <div class="progress-phases">
+              <div class="phase" [class.active]="progress.percentage <= 50" [class.done]="progress.percentage > 50">
+                <span class="phase-label">1. Extração de frames</span>
+                <mat-progress-bar
+                  mode="determinate"
+                  [value]="progress.percentage <= 50 ? progress.percentage * 2 : 100"
+                  class="progress-bar"
+                ></mat-progress-bar>
+              </div>
+
+              <div class="phase" [class.active]="progress.percentage > 50">
+                <span class="phase-label">2. Análise OCR (threads paralelas)</span>
+                <mat-progress-bar
+                  mode="determinate"
+                  [value]="progress.percentage > 50 ? (progress.percentage - 50) * 2 : 0"
+                  class="progress-bar"
+                ></mat-progress-bar>
+              </div>
+            </div>
+
+            <div class="progress-text">
+              <span *ngIf="progress.percentage <= 50">
+                Extraindo frame {{ progress.currentFrame }} de {{ progress.totalFrames }}
+              </span>
+              <span *ngIf="progress.percentage > 50">
+                {{ progress.currentFrame }} de {{ progress.totalFrames }} frames analisados
+              </span>
+              <span class="percentage">{{ progress.percentage }}%</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Dashboard com resultados -->
+  <div *ngIf="result">
+    <app-dashboard-page [result]="result" (newProcessing)="newProcessing()" (exportExcel)="exportExcel()">
+    </app-dashboard-page>
+  </div>
+</div>
