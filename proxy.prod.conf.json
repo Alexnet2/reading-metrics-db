@@ -1,0 +1,7 @@
+{
+  "/api": {
+    "target": "https://manager-debts-backend.vercel.app",
+    "secure": false,
+    "changeOrigin": true
+  }
+}

@@ -20,10 +20,17 @@
             "outputPath": "dist/decibel-meter",
             "index": "src/index.html",
             "main": "src/main.ts",
-            "polyfills": ["zone.js"],
+            "polyfills": [
+              "zone.js"
+            ],
             "tsConfig": "tsconfig.app.json",
-            "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.css"],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.css"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -60,7 +67,10 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "decibel-meter:build:production"
+              "browserTarget": "decibel-meter:build:production",
+              "options": {
+                "proxyConfig": "proxy.prod.conf.json"
+              }
             },
             "development": {
               "browserTarget": "decibel-meter:build:development"
