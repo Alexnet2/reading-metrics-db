@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, interval } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { ProcessingResult, ProcessingProgress } from '@app/models/processing.model';
+import { environment } from '@environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class VideoApiService {
-  private apiUrl = '/api/video';
+  private apiUrl = `${environment.apiUrl}/video`;
   private progressSubject = new BehaviorSubject<ProcessingProgress | null>(null);
   public progress$ = this.progressSubject.asObservable();
 
